@@ -1,0 +1,31 @@
+{
+    "variables": {
+       "vpc_subnet": "{{env `VPC_SUBNET`}}",
+       "sec_group": "{{env `SEC_GROUP`}}"
+    },
+    "builders": [{
+        "type": "amazon-ebs",
+        "region": "us-east-1",
+	"subnet_id": "{{user `vpc_subnet`}}",
+	"associate_public_ip_address": true,
+	"security_group_ids": "{{user `sec_group`}}",
+        "source_ami": "ami-801544e8",
+        "instance_type": "t2.small",
+        "ssh_username": "ec2-user",
+        "ssh_timeout": "5m",
+        "ami_name": "ecs-ami-{{timestamp}}",
+        "tags": {
+          "ami-name": "ecs-basic-ami-docker-15",
+          "owner": "Sascha Moellering",
+          "release": "latest",
+          "creation_date": "{{timestamp}}"
+  }
+    }],
+    "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "sudo yum -y update"
+    ]
+  }]
+}
